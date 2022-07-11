@@ -10,6 +10,8 @@ export default {
       newTop: 0,
       newWidth: 0,
       newHeight: 0,
+      newRight: 0,
+      newBottom: 0,
       color: "#00ff00",
     };
   },
@@ -48,6 +50,7 @@ export default {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         this.containerItems.forEach((element) => {
+          console.log('i');
           ctx.strokeStyle = "#5eead4";
           ctx.strokeRect(
             element.left,
@@ -61,18 +64,16 @@ export default {
         this.newHeight = e.offsetY - y;
         this.newLeft = x;
         this.newTop = y;
-        let newRight = this.newLeft + this.newWidth;
-        let newBottom = this.newTop + this.newHeight;
-
-
+        this.newRight = this.newLeft + this.newWidth;
+        this.newBottom = this.newTop + this.newHeight;
 
         ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(newRight, y)
-        ctx.arc(newRight, y, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(x, newBottom)
-        ctx.arc(x, newBottom, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(newRight, newBottom)
-        ctx.arc(newRight, newBottom, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(this.newRight, y)
+        ctx.arc(this.newRight, y, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(x, this.newBottom)
+        ctx.arc(x, this.newBottom, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(this.newRight, this.newBottom)
+        ctx.arc(this.newRight, this.newBottom, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
@@ -89,48 +90,48 @@ export default {
               this.newTop >= this.containerItems[element].top &&
               this.newTop <= this.containerItems[element].bottom) ||
             // прав верх точка
-            (newRight >= this.containerItems[element].left &&
-              newRight <= this.containerItems[element].right &&
+            (this.newRight >= this.containerItems[element].left &&
+              this.newRight <= this.containerItems[element].right &&
               this.newTop >= this.containerItems[element].top &&
               this.newTop <= this.containerItems[element].bottom) ||
             // лев ниж точка
             (this.newLeft >= this.containerItems[element].left &&
               this.newLeft <= this.containerItems[element].right &&
-              newBottom >= this.containerItems[element].top &&
-              newBottom <= this.containerItems[element].bottom) ||
+              this.newBottom >= this.containerItems[element].top &&
+              this.newBottom <= this.containerItems[element].bottom) ||
             // прав верх точка
-            (newRight >= this.containerItems[element].left &&
-              newRight <= this.containerItems[element].right &&
-              newBottom >= this.containerItems[element].top &&
-              newBottom <= this.containerItems[element].bottom) ||
+            (this.newRight >= this.containerItems[element].left &&
+              this.newRight <= this.containerItems[element].right &&
+              this.newBottom >= this.containerItems[element].top &&
+              this.newBottom <= this.containerItems[element].bottom) ||
             // ширина больше, пересечение по верхней прямой
             (this.newLeft < this.containerItems[element].left &&
               this.newLeft < this.containerItems[element].right &&
-              newRight > this.containerItems[element].left &&
-              newRight > this.containerItems[element].right &&
+              this.newRight > this.containerItems[element].left &&
+              this.newRight > this.containerItems[element].right &&
               this.newTop >= this.containerItems[element].top &&
               this.newTop <= this.containerItems[element].bottom) ||
             // ширина больше, пересечение по нижней прямой
             (this.newLeft < this.containerItems[element].left &&
               this.newLeft < this.containerItems[element].right &&
-              newRight > this.containerItems[element].left &&
-              newRight > this.containerItems[element].right &&
-              newBottom >= this.containerItems[element].top &&
-              newBottom <= this.containerItems[element].bottom) ||
+              this.newRight > this.containerItems[element].left &&
+              this.newRight > this.containerItems[element].right &&
+              this.newBottom >= this.containerItems[element].top &&
+              this.newBottom <= this.containerItems[element].bottom) ||
             // высота больше, пересечение по левой прямой
             (this.newTop < this.containerItems[element].top &&
               this.newTop < this.containerItems[element].bottom &&
-              newBottom > this.containerItems[element].top &&
-              newBottom > this.containerItems[element].bottom &&
+              this.newBottom > this.containerItems[element].top &&
+              this.newBottom > this.containerItems[element].bottom &&
               this.newLeft >= this.containerItems[element].left &&
               this.newLeft <= this.containerItems[element].right) ||
             // высота больше, пересечение по правой прямой
             (this.newTop < this.containerItems[element].top &&
               this.newTop < this.containerItems[element].bottom &&
-              newBottom > this.containerItems[element].top &&
-              newBottom > this.containerItems[element].bottom &&
-              newRight >= this.containerItems[element].left &&
-              newRight <= this.containerItems[element].right)
+              this.newBottom > this.containerItems[element].top &&
+              this.newBottom > this.containerItems[element].bottom &&
+              this.newRight >= this.containerItems[element].left &&
+              this.newRight <= this.containerItems[element].right)
           ) {
             ctx.strokeStyle = "red";
             ctx.fillStyle = "red";
@@ -155,7 +156,6 @@ export default {
         active: active,
       });
       console.log(this.containerItems);
-      // console.log(this.containerItems);
       //  отрисовывать крайние точки у области с active true
     },
     changeActive(e) {

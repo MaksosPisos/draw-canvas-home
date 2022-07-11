@@ -2,10 +2,14 @@
 export default {
   data() {
     return {
-      flag: false,
+      flag: 0,
       x: 0,
       y: 0,
-      containerItems: [],
+      containerItems: [
+        {
+          // active: false
+        }
+      ],
       newLeft: 0,
       newTop: 0,
       newWidth: 0,
@@ -18,39 +22,92 @@ export default {
   methods: {
     mousedown(e) {
       console.log(e.offsetX, e.offsetY);
-      console.log(this.flag);
       // проверка клика по области
-      // for (let i = this.containerItems.length - 1; i >= 0; i--) {
-      //   if ((e.offsetX >= this.containerItems[i].left && e.offsetX <= this.containerItems[i].left + this.containerItems[i].width) && (e.offsetY >= this.containerItems[i].top && e.offsetY <= this.containerItems[i].top + this.containerItems[i].height)) {
-      //     this.flag = false;
-      //     console.log(this.flag);
-      //   } 
-      // }
-      this.flag = true;
+      // если ширина и длина отрицательны
+      // || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right)  && (e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top))
+      for (let i = this.containerItems.length - 1; i >= 0; i--) {
+        if (((e.offsetX >= this.containerItems[i].left && e.offsetX <= this.containerItems[i].left + this.containerItems[i].width) && (e.offsetY >= this.containerItems[i].top && e.offsetY <= this.containerItems[i].top + this.containerItems[i].height)) || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right) && (e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top)) || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right) && (e.offsetY >= this.containerItems[i].top && e.offsetY <= this.containerItems[i].top + this.containerItems[i].height)) || ((e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top) && (e.offsetX >= this.containerItems[i].left && e.offsetX <= this.containerItems[i].left + this.containerItems[i].width))) {
+          this.flag -= 100000;
+          this.changeActive(i);
+        }
+        // угол который будем двигать у активной области
+        if ((e.offsetX <= this.containerItems[i].left + 10 && e.offsetX >= this.containerItems[i].left - 10) && (e.offsetY <= this.containerItems[i].top + 10 && e.offsetY >= this.containerItems[i].top - 10)) {
+          this.flag = -10000;
+          this.mousemove(e, i, 'lt');
+          console.log('left top', i);
+        } else if ((e.offsetX <= this.containerItems[i].left + 10 && e.offsetX >= this.containerItems[i].left - 10) && (e.offsetY <= this.containerItems[i].bottom + 10 && e.offsetY >= this.containerItems[i].bottom - 10)) {
+          this.flag = -10000;
+          this.mousemove(e, i, 'lb');
+          console.log('left bot', i);
+        } else if ((e.offsetX <= this.containerItems[i].right + 10 && e.offsetX >= this.containerItems[i].right - 10) && (e.offsetY <= this.containerItems[i].top + 10 && e.offsetY >= this.containerItems[i].top - 10)) {
+          this.flag = -10000;
+          this.mousemove(e, i, 'rt');
+          console.log('rigth top', i);
+        } else if ((e.offsetX <= this.containerItems[i].right + 10 && e.offsetX >= this.containerItems[i].right - 10) && (e.offsetY <= this.containerItems[i].bottom + 10 && e.offsetY >= this.containerItems[i].bottom - 10)) {
+          this.flag = -10000;
+          this.mousemove(e, i, 'rb');
+          console.log('rihgt bottom', i);
+        }
+        else {
+          this.flag += 1;
+        }
+      }
       // верхний левый угол
       this.x = e.offsetX;
       this.y = e.offsetY;
     },
-    mouseup(e) {
-      this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight, true);
-      this.flag = false;
+    // рисуем линии
+    drawPath(e, index, angle) {
+      
+      console.log(this.flag);
+      const canvas = document.getElementById("canvass");
+      let ctx = canvas.getContext("2d");
+      let x = this.x;
+      let y = this.y;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      this.containerItems.forEach((element) => {
+        ctx.strokeStyle = "#5eead4";
+        ctx.strokeRect(
+          element.left,
+          element.top,
+          element.width,
+          element.height
+        );
+      });
+      if (this.containerItems[index]) {
+        ctx.strokeStyle = this.color
+        ctx.strokeRect(
+          this.containerItems[index].left,
+          this.containerItems[index].top,
+          this.containerItems[index].width,
+          this.containerItems[index].height
+        );
+      }
     },
-    mousemove(e) {
-      if (this.flag) {
+    mouseup(e) {
+      this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight, false);
+      this.flag = false;
+      this.newHeight = 0;
+      this.newWidth = 0;
+    },
+    mousemove(e, index, angle) {
+      if (this.flag === -10000) {
+        this.drawPath(e, index, angle)
+      } else if (this.flag > 0) {
         this.drawRect(e);
       }
     },
+    // отрисовка дефолтных четырехугольников
     drawRect(e) {
-      if (this.flag) {
+      if (this.flag >= 0) {
         const canvas = document.getElementById("canvass");
         let ctx = canvas.getContext("2d");
-        let circle = canvas.getContext("2d");
         let x = this.x;
         let y = this.y;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         this.containerItems.forEach((element) => {
-          console.log('i');
           ctx.strokeStyle = "#5eead4";
           ctx.strokeRect(
             element.left,
@@ -59,14 +116,29 @@ export default {
             element.height
           );
         });
-
         this.newWidth = e.offsetX - x;
         this.newHeight = e.offsetY - y;
         this.newLeft = x;
         this.newTop = y;
         this.newRight = this.newLeft + this.newWidth;
         this.newBottom = this.newTop + this.newHeight;
-
+        // if (this.containerItems.length > 0) {
+        //   for (let i = this.containerItems.length - 1; i >= 0; i--) {
+        //     if (this.containerItems[i].active === true) {
+        //       ctx.arc(this.containerItems[i].left, this.containerItems[i].top, 10, 0, 2 * Math.PI, false);
+        //       ctx.moveTo(this.containerItems[i].right, this.containerItems[i].top)
+        //       ctx.arc(this.containerItems[i].right, this.containerItems[i].top, 10, 0, 2 * Math.PI, false);
+        //       ctx.moveTo(this.containerItems[i].left, this.containerItems[i].bottom)
+        //       ctx.arc(this.containerItems[i].left, this.containerItems[i].bottom, 10, 0, 2 * Math.PI, false);
+        //       ctx.moveTo(this.containerItems[i].right, this.containerItems[i].bottom)
+        //       ctx.arc(this.containerItems[i].right, this.containerItems[i].bottom, 10, 0, 2 * Math.PI, false);
+        //       ctx.lineWidth = 1;
+        //       ctx.strokeStyle = this.color;
+        //       ctx.fillStyle = this.color;
+        //       console.log(i);
+        //     }
+        //   }
+        // }
         ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.newRight, y)
         ctx.arc(this.newRight, y, 10, 0, 2 * Math.PI, false);
@@ -77,7 +149,6 @@ export default {
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
-
         for (
           let element = this.containerItems.length - 1;
           element >= 0;
@@ -142,24 +213,80 @@ export default {
 
       }
     },
+    // new object
     addNewRect(left, top, width, height, active) {
-      this.containerItems.forEach(element => {
-        element.active = false
-      })
-      this.containerItems.push({
-        width: width,
-        height: height,
-        left: left,
-        top: top,
-        right: left + width,
-        bottom: top + height,
-        active: active,
-      });
+      for (let i = this.containerItems.length - 1; i >= 0; i--) {
+        this.containerItems[i].active = false
+      }
+      // отрицательная высота/ширина (реализовано в проверке)
+      let push = true;
+      // let bottom;
+      // let right;
+      console.log(left, top, width, height);
+      if (height === 0 && width === 0) {
+        push = false
+        // } else if (height < 0) {
+        // } else if (width < 0) {
+        // } else if (height < 0 && width < 0) {
+        //   // bottom += Math.abs(height);
+        //   // top -= Math.abs(height)
+        //   // right += Math.abs(width);
+        //   // left -= Math.abs(width)
+        // } else {
+      }
+      if (push) {
+        this.containerItems.push({
+          width: width,
+          height: height,
+          left: left,
+          top: top,
+          right: left + width,
+          bottom: top + height,
+          active: active,
+        });
+      }
       console.log(this.containerItems);
       //  отрисовывать крайние точки у области с active true
     },
-    changeActive(e) {
-
+    changeActive(index) {
+      for (let i = this.containerItems.length - 1; i >= 0; i--) {
+        this.containerItems[i].active = false;
+      }
+      this.containerItems[index].active = true;
+      const canvas = document.getElementById("canvass");
+      let ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.strokeStyle = this.color
+      this.containerItems.forEach((element) => {
+        ctx.strokeStyle = "#5eead4";
+        ctx.strokeRect(
+          element.left,
+          element.top,
+          element.width,
+          element.height
+        );
+      });
+      if (this.containerItems[index].active) {
+        ctx.strokeStyle = this.color
+        ctx.strokeRect(
+          this.containerItems[index].left,
+          this.containerItems[index].top,
+          this.containerItems[index].width,
+          this.containerItems[index].height
+        );
+      }
+      ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+      ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+      ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+      ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+      ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+      ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+      ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = this.color;
+      ctx.fillStyle = this.color;
+      ctx.fill();
     },
   },
 };
@@ -168,7 +295,7 @@ export default {
 <template>
   <div class="">
     <canvas id="canvass" width="1000" height="600" class="bg-slate-800 bg-[url('../public/bg-canvas.jpg')] mx-auto my-4"
-      @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup" @click="changeActive">
+      @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup">
     </canvas>
   </div>
 </template>

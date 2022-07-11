@@ -17,6 +17,8 @@ export default {
       newRight: 0,
       newBottom: 0,
       color: "#00ff00",
+      angle: '',
+      index: null
     };
   },
   methods: {
@@ -33,19 +35,21 @@ export default {
         // угол который будем двигать у активной области
         if ((e.offsetX <= this.containerItems[i].left + 10 && e.offsetX >= this.containerItems[i].left - 10) && (e.offsetY <= this.containerItems[i].top + 10 && e.offsetY >= this.containerItems[i].top - 10)) {
           this.flag = -10000;
-          this.mousemove(e, i, 'lt');
+          // this.mousemove(e, i, 'lt');
           console.log('left top', i);
         } else if ((e.offsetX <= this.containerItems[i].left + 10 && e.offsetX >= this.containerItems[i].left - 10) && (e.offsetY <= this.containerItems[i].bottom + 10 && e.offsetY >= this.containerItems[i].bottom - 10)) {
           this.flag = -10000;
-          this.mousemove(e, i, 'lb');
+          // this.mousemove(e, i, 'lb');
           console.log('left bot', i);
         } else if ((e.offsetX <= this.containerItems[i].right + 10 && e.offsetX >= this.containerItems[i].right - 10) && (e.offsetY <= this.containerItems[i].top + 10 && e.offsetY >= this.containerItems[i].top - 10)) {
           this.flag = -10000;
-          this.mousemove(e, i, 'rt');
+          // this.mousemove(e, i, 'rt');
           console.log('rigth top', i);
         } else if ((e.offsetX <= this.containerItems[i].right + 10 && e.offsetX >= this.containerItems[i].right - 10) && (e.offsetY <= this.containerItems[i].bottom + 10 && e.offsetY >= this.containerItems[i].bottom - 10)) {
+          window.addEventListener('mousemove', this.drawPath)
           this.flag = -10000;
-          this.mousemove(e, i, 'rb');
+          this.index = i
+          this.angle = 'rb'
           console.log('rihgt bottom', i);
         }
         else {
@@ -57,33 +61,55 @@ export default {
       this.y = e.offsetY;
     },
     // рисуем линии
-    drawPath(e, index, angle) {
-      
-      console.log(this.flag);
+    drawPath(event) {
+      window.addEventListener('mouseup', this.drawPathMouseup)
       const canvas = document.getElementById("canvass");
       let ctx = canvas.getContext("2d");
       let x = this.x;
       let y = this.y;
+      console.log(event.offsetX, event.offsetY);
+      this.newWidth = event.offsetX - x;
+      this.newHeight = event.offsetY - y;
+      this.newLeft = x;
+      this.newTop = y;
+      this.newRight = this.newLeft + this.newWidth;
+      this.newBottom = this.newTop + this.newHeight;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      this.containerItems.forEach((element) => {
-        ctx.strokeStyle = "#5eead4";
-        ctx.strokeRect(
-          element.left,
-          element.top,
-          element.width,
-          element.height
-        );
-      });
-      if (this.containerItems[index]) {
-        ctx.strokeStyle = this.color
-        ctx.strokeRect(
-          this.containerItems[index].left,
-          this.containerItems[index].top,
-          this.containerItems[index].width,
-          this.containerItems[index].height
-        );
+      if (this.angle === 'rb') {
+        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
+        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
+        ctx.lineTo(event.offsetX, event.offsetY)
+        ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
+        ctx.lineTo(event.offsetX, event.offsetY)
       }
+      ctx.closePath()
+      ctx.stroke()
+      // this.containerItems.forEach((element) => {
+      //   ctx.strokeStyle = "#5eead4";
+      //   ctx.strokeRect(
+      //     element.left,
+      //     element.top,
+      //     element.width,
+      //     element.height
+      //   );
+      // });
+      // if (this.containerItems[index]) {
+      //   ctx.strokeStyle = this.color
+      //   ctx.strokeRect(
+      //     this.containerItems[index].left,
+      //     this.containerItems[index].top,
+      //     this.containerItems[index].width,
+      //     this.containerItems[index].height
+      //   );
+      // }
+    },
+    drawPathMouseup(e) {
+      window.removeEventListener('mousemove', this.drawPath);
+      window.removeEventListener('mouseup', this.drawPathMouseup);
     },
     mouseup(e) {
       this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight, false);
@@ -91,10 +117,8 @@ export default {
       this.newHeight = 0;
       this.newWidth = 0;
     },
-    mousemove(e, index, angle) {
-      if (this.flag === -10000) {
-        this.drawPath(e, index, angle)
-      } else if (this.flag > 0) {
+    mousemove(e) {
+      if (this.flag > 0) {
         this.drawRect(e);
       }
     },

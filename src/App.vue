@@ -30,7 +30,7 @@ export default {
       this.y = e.offsetY;
     },
     mouseup(e) {
-      this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight);
+      this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight, true);
       this.flag = false;
     },
     mousemove(e) {
@@ -42,6 +42,7 @@ export default {
       if (this.flag) {
         const canvas = document.getElementById("canvass");
         let ctx = canvas.getContext("2d");
+        let circle = canvas.getContext("2d");
         let x = this.x;
         let y = this.y;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -62,12 +63,25 @@ export default {
         this.newTop = y;
         let newRight = this.newLeft + this.newWidth;
         let newBottom = this.newTop + this.newHeight;
+
+
+
+        ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(newRight, y)
+        ctx.arc(newRight, y, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(x, newBottom)
+        ctx.arc(x, newBottom, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(newRight, newBottom)
+        ctx.arc(newRight, newBottom, 10, 0, 2 * Math.PI, false);
+        ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
+        ctx.fillStyle = this.color;
+
         for (
           let element = this.containerItems.length - 1;
           element >= 0;
           element--
-        ){
+        ) {
           if (
             // лев верх точка
             (this.newLeft >= this.containerItems[element].left &&
@@ -103,14 +117,14 @@ export default {
               newRight > this.containerItems[element].right &&
               newBottom >= this.containerItems[element].top &&
               newBottom <= this.containerItems[element].bottom) ||
-              // высота больше, пересечение по левой прямой
+            // высота больше, пересечение по левой прямой
             (this.newTop < this.containerItems[element].top &&
               this.newTop < this.containerItems[element].bottom &&
               newBottom > this.containerItems[element].top &&
               newBottom > this.containerItems[element].bottom &&
               this.newLeft >= this.containerItems[element].left &&
               this.newLeft <= this.containerItems[element].right) ||
-              // высота больше, пересечение по правой прямой
+            // высота больше, пересечение по правой прямой
             (this.newTop < this.containerItems[element].top &&
               this.newTop < this.containerItems[element].bottom &&
               newBottom > this.containerItems[element].top &&
@@ -119,38 +133,18 @@ export default {
               newRight <= this.containerItems[element].right)
           ) {
             ctx.strokeStyle = "red";
-            console.log(false);
+            ctx.fillStyle = "red";
           }
         }
-        // this.containerItems.forEach((element) => {
-        //             if (
-        //     (this.newLeft >= element.left &&
-        //       this.newLeft <= element.right &&
-        //       this.newTop >= element.top &&
-        //       this.newTop <= element.bottom) ||
-        //     (newRight >= element.left &&
-        //       newRight <= element.right &&
-        //       this.newTop >= element.top &&
-        //       this.newTop <= element.bottom) ||
-        //     (this.newLeft >= element.left &&
-        //       this.newLeft <= element.right &&
-        //       newBottom >= element.top &&
-        //       newBottom <= element.bottom) ||
-        //     (newRight >= element.left &&
-        //       newRight <= element.right &&
-        //       newBottom >= element.top &&
-        //       newBottom <= element.bottom)
-        //   ) {
-        //     ctx.strokeStyle = "red";
-        //   } else {
-        //     ctx.strokeStyle = this.color;
-        //   }
-        // });
-
+        ctx.fill();
         ctx.strokeRect(x, y, this.newWidth, this.newHeight);
+
       }
     },
-    addNewRect(left, top, width, height) {
+    addNewRect(left, top, width, height, active) {
+      this.containerItems.forEach(element => {
+        element.active = false
+      })
       this.containerItems.push({
         width: width,
         height: height,
@@ -158,11 +152,14 @@ export default {
         top: top,
         right: left + width,
         bottom: top + height,
-        active: false,
+        active: active,
       });
       console.log(this.containerItems);
       // console.log(this.containerItems);
-      //  отрисовывать левые крайние точки у области с active true
+      //  отрисовывать крайние точки у области с active true
+    },
+    changeActive(e) {
+
     },
   },
 };
@@ -170,16 +167,9 @@ export default {
 
 <template>
   <div class="">
-    <canvas
-      id="canvass"
-      width="1000"
-      height="600"
-      class="bg-slate-800 bg-[url('../public/bg-canvas.jpg')] mx-auto my-4"
-      @mousedown="mousedown"
-      @mousemove="mousemove"
-      @mouseup="mouseup"
-      @click="changeActive"
-    >
+    <canvas id="canvass" width="1000" height="600" class="bg-slate-800 bg-[url('../public/bg-canvas.jpg')] mx-auto my-4"
+      @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup" @click="changeActive">
     </canvas>
   </div>
 </template>
+<!-- при клике по области менять active, и перерисовывать цвет.... -->

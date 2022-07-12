@@ -178,23 +178,25 @@ export default {
       });
       if (this.angle === 'rb') {
         // линии
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
-        ctx.lineTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
-        ctx.lineTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
+        this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top)
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
         ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
+        ctx.moveTo(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top)
         ctx.lineTo(event.offsetX, event.offsetY)
         // создаем координату сдвинутой крайней точки
-        this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
+
         // круг
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
-        ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
-        ctx.arc(this.containerItems[this.index].right, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
-        ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].bottom, 10, 0, 2 * Math.PI, false);
+
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.arc(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top)
+        ctx.arc(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
+        ctx.moveTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.arc(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(event.offsetX, event.offsetY)
         ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
@@ -203,16 +205,18 @@ export default {
         ctx.fill();
 
       } else if (this.angle === 'rt') {
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
+        this.containerItems[this.index].rt = [event.offsetX, event.offsetY]
+        console.log(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left);
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
         ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
-        ctx.lineTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
-        ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].bottom)
-        ctx.lineTo(this.containerItems[this.index].right, this.containerItems[this.index].bottom)
-        ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.lineTo(this.containerItems[this.index].rb[0] || this.containerItems[this.index].right, this.containerItems[this.index].rb[1] || this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].rb[0] || this.containerItems[this.index].right, this.containerItems[this.index].rb[1] || this.containerItems[this.index].bottom)
         ctx.lineTo(event.offsetX, event.offsetY)
 
-        this.containerItems[this.index].rt = [event.offsetX, event.offsetY]
+
 
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);

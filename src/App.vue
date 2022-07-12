@@ -75,10 +75,56 @@ export default {
       ctx.beginPath();
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
-        // if(){
-
-        // } else
-        if (element.lt != undefined) {
+        if (element.lt != undefined && element.rt != undefined && element.lb != undefined && element.rb != undefined) {
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.lb[0], element.lb[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.rt[0], element.rt[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+        } else if (element.lt != undefined && element.rt != undefined && element.lb != undefined) {
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.lb[0], element.lb[1])
+          ctx.lineTo(element.right, element.bottom)
+          ctx.moveTo(element.rt[0], element.rt[1])
+          ctx.lineTo(element.right, element.bottom)
+        }
+        else if (element.lt != undefined && element.rt != undefined && element.rb != undefined) {
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.left, element.bottom)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.rt[0], element.rt[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+        }
+        else if (element.lt != undefined && element.rb != undefined && element.lb != undefined) {
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.right, element.top)
+          ctx.moveTo(element.lt[0], element.lt[1])
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.lb[0], element.lb[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.rb[0], element.rb[1])
+        }
+        else if (element.rt != undefined && element.rb != undefined && element.lb != undefined) {
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.lb[0], element.lb[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.rt[0], element.rt[1])
+          ctx.lineTo(element.rb[0], element.rb[1])
+        }
+        else if (element.lt != undefined) {
           ctx.moveTo(element.right, element.bottom)
           ctx.lineTo(element.right, element.top)
           ctx.moveTo(element.right, element.bottom)
@@ -638,3 +684,4 @@ export default {
   </div>
 </template>
 <!-- при клике по области менять active, и перерисовывать цвет.... -->
+<!-- когда смещается крайняя точка задавать lt rt lb rb -->

@@ -75,96 +75,16 @@ export default {
       ctx.beginPath();
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
-        if (element.lt != undefined && element.rt != undefined && element.lb != undefined && element.rb != undefined) {
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.lb[0], element.lb[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.rt[0], element.rt[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-        } else if (element.lt != undefined && element.rt != undefined && element.lb != undefined) {
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.lb[0], element.lb[1])
-          ctx.lineTo(element.right, element.bottom)
-          ctx.moveTo(element.rt[0], element.rt[1])
-          ctx.lineTo(element.right, element.bottom)
-        }
-        else if (element.lt != undefined && element.rt != undefined && element.rb != undefined) {
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.left, element.bottom)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.rt[0], element.rt[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-        }
-        else if (element.lt != undefined && element.rb != undefined && element.lb != undefined) {
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.right, element.top)
-          ctx.moveTo(element.lt[0], element.lt[1])
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.lb[0], element.lb[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.rb[0], element.rb[1])
-        }
-        else if (element.rt != undefined && element.rb != undefined && element.lb != undefined) {
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.lb[0], element.lb[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.rt[0], element.rt[1])
-          ctx.lineTo(element.rb[0], element.rb[1])
-        }
-        else if (element.lt != undefined) {
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.right, element.top)
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.left, element.bottom)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.lt[0], element.lt[1])
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.lt[0], element.lt[1])
+        if (element.rt || element.lt || element.rb || element.lb) {
+          ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+          ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+          ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
 
-        } else if (element.rt != undefined) {
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.left, element.top)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.right, element.bottom)
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.closePath()
-          ctx.stroke()
-        } else if (element.lb != undefined) {
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.right, element.bottom)
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.left, element.top)
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.closePath()
-          ctx.stroke()
-        } else if (element.rb != undefined) {
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.right, element.top)
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.left, element.bottom)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.rb[0], element.rb[1])
           ctx.closePath()
           ctx.stroke()
         } else {
@@ -178,6 +98,15 @@ export default {
       });
       if (this.angle === 'rb') {
         // линии
+        this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top)
+        ctx.moveTo(this.containerItems[this.index].lt[0] || this.containerItems[this.index].left, this.containerItems[this.index].lt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.moveTo(this.containerItems[this.index].lb[0] || this.containerItems[this.index].left, this.containerItems[this.index].lb[1] || this.containerItems[this.index].bottom)
+        ctx.lineTo(event.offsetX, event.offsetY)
+        ctx.moveTo(this.containerItems[this.index].rt[0] || this.containerItems[this.index].right, this.containerItems[this.index].rt[1] || this.containerItems[this.index].top)
+        ctx.lineTo(event.offsetX, event.offsetY)
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.lineTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
@@ -187,7 +116,10 @@ export default {
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.lineTo(event.offsetX, event.offsetY)
         // создаем координату сдвинутой крайней точки
-        this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
+        // this.containerItems[this.index].lt = [this.containerItems[this.index].left, this.containerItems[this.index].top]
+        // this.containerItems[this.index].rt = [this.containerItems[this.index].right, this.containerItems[this.index].top]
+        // this.containerItems[this.index].lb = [this.containerItems[this.index].left, this.containerItems[this.index].bottom]
+
         // круг
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
@@ -213,6 +145,9 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
 
         this.containerItems[this.index].rt = [event.offsetX, event.offsetY]
+        this.containerItems[this.index].lt = [this.containerItems[this.index].left, this.containerItems[this.index].top]
+        this.containerItems[this.index].rb = [this.containerItems[this.index].right, this.containerItems[this.index].bottom]
+        this.containerItems[this.index].lb = [this.containerItems[this.index].left, this.containerItems[this.index].bottom]
 
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
@@ -238,6 +173,9 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
 
         this.containerItems[this.index].lt = [event.offsetX, event.offsetY]
+        this.containerItems[this.index].rb = [this.containerItems[this.index].right, this.containerItems[this.index].bottom]
+        this.containerItems[this.index].rt = [this.containerItems[this.index].right, this.containerItems[this.index].top]
+        this.containerItems[this.index].lb = [this.containerItems[this.index].left, this.containerItems[this.index].bottom]
 
         ctx.moveTo(event.offsetX, event.offsetY)
         ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
@@ -263,6 +201,9 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
 
         this.containerItems[this.index].lb = [event.offsetX, event.offsetY]
+        this.containerItems[this.index].lt = [this.containerItems[this.index].left, this.containerItems[this.index].top]
+        this.containerItems[this.index].rt = [this.containerItems[this.index].right, this.containerItems[this.index].top]
+        this.containerItems[this.index].rb = [this.containerItems[this.index].right, this.containerItems[this.index].bottom]
 
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
@@ -310,49 +251,15 @@ export default {
         ctx.beginPath();
         this.containerItems.forEach((element) => {
           ctx.strokeStyle = "#5eead4";
-          if (element.lt != undefined) {
-            ctx.moveTo(element.right, element.bottom)
-            ctx.lineTo(element.right, element.top)
-            ctx.moveTo(element.right, element.bottom)
-            ctx.lineTo(element.left, element.bottom)
-            ctx.moveTo(element.left, element.bottom)
-            ctx.lineTo(element.lt[0], element.lt[1])
-            ctx.moveTo(element.right, element.top)
-            ctx.lineTo(element.lt[0], element.lt[1])
-
-            ctx.closePath()
-            ctx.stroke()
-          } else if (element.rt) {
-            ctx.moveTo(element.left, element.bottom)
-            ctx.lineTo(element.left, element.top)
-            ctx.moveTo(element.left, element.bottom)
-            ctx.lineTo(element.right, element.bottom)
-            ctx.moveTo(element.right, element.bottom)
-            ctx.lineTo(element.rt[0], element.rt[1])
-            ctx.moveTo(element.left, element.top)
-            ctx.lineTo(element.rt[0], element.rt[1])
-            ctx.closePath()
-            ctx.stroke()
-          } else if (element.lb) {
-            ctx.moveTo(element.right, element.top)
-            ctx.lineTo(element.right, element.bottom)
-            ctx.moveTo(element.right, element.top)
-            ctx.lineTo(element.left, element.top)
-            ctx.moveTo(element.left, element.top)
-            ctx.lineTo(element.lb[0], element.lb[1])
-            ctx.moveTo(element.right, element.bottom)
-            ctx.lineTo(element.lb[0], element.lb[1])
-            ctx.closePath()
-            ctx.stroke()
-          } else if (element.rb) {
-            ctx.moveTo(element.left, element.top)
-            ctx.lineTo(element.right, element.top)
-            ctx.moveTo(element.left, element.top)
-            ctx.lineTo(element.left, element.bottom)
-            ctx.moveTo(element.left, element.bottom)
-            ctx.lineTo(element.rb[0], element.rb[1])
-            ctx.moveTo(element.right, element.top)
-            ctx.lineTo(element.rb[0], element.rb[1])
+          if (element.rt || element.lt || element.rb || element.lb) {
+            ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+            ctx.lineTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+            ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+            ctx.lineTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+            ctx.moveTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+            ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
+            ctx.moveTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+            ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
             ctx.closePath()
             ctx.stroke()
           } else {
@@ -502,49 +409,15 @@ export default {
       ctx.strokeStyle = this.color
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
-        if (element.lt != undefined) {
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.right, element.top)
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.left, element.bottom)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.lt[0], element.lt[1])
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.lt[0], element.lt[1])
-          ctx.closePath()
-          ctx.stroke()
-
-        } else if (element.rt != undefined) {
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.left, element.top)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.right, element.bottom)
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.closePath()
-          ctx.stroke()
-        } else if (element.lb != undefined) {
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.right, element.bottom)
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.left, element.top)
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.right, element.bottom)
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.closePath()
-          ctx.stroke()
-        } else if (element.rb != undefined) {
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.right, element.top)
-          ctx.moveTo(element.left, element.top)
-          ctx.lineTo(element.left, element.bottom)
-          ctx.moveTo(element.left, element.bottom)
-          ctx.lineTo(element.rb[0], element.rb[1])
-          ctx.moveTo(element.right, element.top)
-          ctx.lineTo(element.rb[0], element.rb[1])
+        if (element.rt || element.lt || element.rb || element.lb) {
+          ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+          ctx.moveTo(element.lt[0] || this.containerItems[this.index].left, element.lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(element.lb[0] || this.containerItems[this.index].left, element.lb[1] || this.containerItems[this.index].bottom)
+          ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(element.rt[0] || this.containerItems[this.index].right, element.rt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(element.rb[0] || this.containerItems[this.index].right, element.rb[1] || this.containerItems[this.index].bottom)
           ctx.closePath()
           ctx.stroke()
         } else {
@@ -558,93 +431,25 @@ export default {
       });
       if (this.containerItems[index].active) {
         ctx.strokeStyle = this.color
-        if (this.containerItems[index].lt != undefined) {
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+        if (this.containerItems[index].rt || this.containerItems[index].lt || this.containerItems[index].rb || this.containerItems[index].lb) {
+          ctx.moveTo(this.containerItems[index].lt[0] || this.containerItems[this.index].left, this.containerItems[index].lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(this.containerItems[index].rt[0] || this.containerItems[this.index].right, this.containerItems[index].rt[1] || this.containerItems[this.index].top)
+          ctx.moveTo(this.containerItems[index].lt[0] || this.containerItems[this.index].left, this.containerItems[index].lt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(this.containerItems[index].lb[0] || this.containerItems[this.index].left, this.containerItems[index].lb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(this.containerItems[index].lb[0] || this.containerItems[this.index].left, this.containerItems[index].lb[1] || this.containerItems[this.index].bottom)
+          ctx.lineTo(this.containerItems[index].rb[0] || this.containerItems[this.index].right, this.containerItems[index].rb[1] || this.containerItems[this.index].bottom)
+          ctx.moveTo(this.containerItems[index].rt[0] || this.containerItems[this.index].right, this.containerItems[index].rt[1] || this.containerItems[this.index].top)
+          ctx.lineTo(this.containerItems[index].rb[0] || this.containerItems[this.index].right, this.containerItems[index].rb[1] || this.containerItems[this.index].bottom)
 
           // круги активного 
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-          ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
-
-          ctx.closePath()
-          ctx.stroke()
-
-
-        } else if (this.containerItems[index].rt != undefined) {
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-          ctx.arc(this.containerItems[index].rt[0], this.containerItems[index].rt[1], 10, 0, 2 * Math.PI, false);
-
-          ctx.closePath()
-          ctx.stroke()
-        } else if (this.containerItems[index].lb != undefined) {
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-          ctx.arc(this.containerItems[index].lb[0], this.containerItems[index].lb[1], 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-
-
-          ctx.closePath()
-          ctx.stroke()
-        } else if (this.containerItems[index].rb != undefined) {
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-
-
-
-          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-          ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-          ctx.arc(this.containerItems[index].rb[0], this.containerItems[index].rb[1], 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].rb[0] || this.containerItems[index].right, this.containerItems[index].rb[1] || this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].rb[0] || this.containerItems[index].right, this.containerItems[index].rb[1] || this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].rt[0] || this.containerItems[index].right, this.containerItems[index].rt[1] || this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].rt[0] || this.containerItems[index].right, this.containerItems[index].rt[1] || this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].lb[0] || this.containerItems[index].left, this.containerItems[index].lb[1] || this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].lb[0] || this.containerItems[index].left, this.containerItems[index].lb[1] || this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].lt[0] || this.containerItems[index].left, this.containerItems[index].lt[1] || this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].lt[0] || this.containerItems[index].left, this.containerItems[index].lt[1] || this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
 
           ctx.closePath()
           ctx.stroke()

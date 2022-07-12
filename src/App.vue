@@ -75,9 +75,10 @@ export default {
       ctx.beginPath();
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
-        if(x){
-          
-        } else if(element.lt != undefined) {
+        // if(){
+
+        // } else
+        if (element.lt != undefined) {
           ctx.moveTo(element.right, element.bottom)
           ctx.lineTo(element.right, element.top)
           ctx.moveTo(element.right, element.bottom)

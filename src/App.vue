@@ -68,14 +68,6 @@ export default {
       window.addEventListener('mouseup', this.drawPathMouseup)
       const canvas = document.getElementById("canvass");
       let ctx = canvas.getContext("2d");
-      let x = this.x;
-      let y = this.y;
-      this.newWidth = event.offsetX - x;
-      this.newHeight = event.offsetY - y;
-      this.newLeft = x;
-      this.newTop = y;
-      this.newRight = this.newLeft + this.newWidth;
-      this.newBottom = this.newTop + this.newHeight;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
       if (this.angle === 'rb') {
@@ -124,6 +116,7 @@ export default {
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.fill();
+
       } else if (this.angle === 'lt') {
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].bottom)
         ctx.lineTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
@@ -146,6 +139,7 @@ export default {
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.fill();
+
       } else if (this.angle === 'lb') {
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.lineTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
@@ -157,7 +151,7 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
 
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
-        ctx.arc(this.containerItems[this.index].left,this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
+        ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].right, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(event.offsetX, event.offsetY)
@@ -169,9 +163,18 @@ export default {
         ctx.fillStyle = this.color;
         ctx.fill();
       }
+      this.containerItems.forEach((element) => {
+        ctx.strokeStyle = "#5eead4";
+        ctx.strokeRect(
+          element.left,
+          element.top,
+          element.width,
+          element.height
+        );
+      });
       ctx.closePath()
       ctx.stroke()
-
+      // this.containerItems.splice(this.index, 1)
     },
     drawPathMouseup(e) {
       window.removeEventListener('mousemove', this.drawPath);

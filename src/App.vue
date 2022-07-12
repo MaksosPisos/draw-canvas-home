@@ -18,7 +18,11 @@ export default {
       newBottom: 0,
       color: "#00ff00",
       angle: '',
-      index: null
+      index: null,
+      lt: undefined,
+      rt: undefined,
+      lb: undefined,
+      rb: undefined
     };
   },
   methods: {
@@ -53,7 +57,6 @@ export default {
           this.flag = -10000;
           this.index = i
           this.angle = 'rb'
-          console.log('rihgt bottom', i);
         }
         else {
           this.flag += 1;
@@ -70,6 +73,62 @@ export default {
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
+      this.containerItems.forEach((element) => {
+        ctx.strokeStyle = "#5eead4";
+        if(x){
+          
+        } else if(element.lt != undefined) {
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.right, element.top)
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.left, element.bottom)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.lt[0], element.lt[1])
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.lt[0], element.lt[1])
+
+        } else if (element.rt != undefined) {
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.left, element.top)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.right, element.bottom)
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else if (element.lb != undefined) {
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.right, element.bottom)
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.left, element.top)
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else if (element.rb != undefined) {
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.right, element.top)
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.left, element.bottom)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else {
+          ctx.strokeRect(
+            element.left,
+            element.top,
+            element.width,
+            element.height
+          );
+        }
+      });
       if (this.angle === 'rb') {
         // линии
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
@@ -80,6 +139,8 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.lineTo(event.offsetX, event.offsetY)
+        // создаем координату сдвинутой крайней точки
+        this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
         // круг
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
@@ -104,6 +165,8 @@ export default {
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].bottom)
         ctx.lineTo(event.offsetX, event.offsetY)
 
+        this.containerItems[this.index].rt = [event.offsetX, event.offsetY]
+
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(event.offsetX, event.offsetY)
@@ -126,6 +189,8 @@ export default {
         ctx.lineTo(event.offsetX, event.offsetY)
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
         ctx.lineTo(event.offsetX, event.offsetY)
+
+        this.containerItems[this.index].lt = [event.offsetX, event.offsetY]
 
         ctx.moveTo(event.offsetX, event.offsetY)
         ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
@@ -150,6 +215,8 @@ export default {
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].bottom)
         ctx.lineTo(event.offsetX, event.offsetY)
 
+        this.containerItems[this.index].lb = [event.offsetX, event.offsetY]
+
         ctx.moveTo(this.containerItems[this.index].left, this.containerItems[this.index].top)
         ctx.arc(this.containerItems[this.index].left, this.containerItems[this.index].top, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.containerItems[this.index].right, this.containerItems[this.index].top)
@@ -163,15 +230,6 @@ export default {
         ctx.fillStyle = this.color;
         ctx.fill();
       }
-      this.containerItems.forEach((element) => {
-        ctx.strokeStyle = "#5eead4";
-        ctx.strokeRect(
-          element.left,
-          element.top,
-          element.width,
-          element.height
-        );
-      });
       ctx.closePath()
       ctx.stroke()
       // this.containerItems.splice(this.index, 1)
@@ -181,7 +239,10 @@ export default {
       window.removeEventListener('mouseup', this.drawPathMouseup);
     },
     mouseup(e) {
-      this.addNewRect(this.newLeft, this.newTop, this.newWidth, this.newHeight, false);
+      if (this.flag > 0) {
+        this.addNewRect(this.newLeft, this.newTop, this.newRight, this.newBottom, false);
+      }
+      // this.addNewRect(this.newLeft, this.newTop, this.newRight, this.newBottom, false);
       this.flag = false;
       this.newHeight = 0;
       this.newWidth = 0;
@@ -202,12 +263,60 @@ export default {
         ctx.beginPath();
         this.containerItems.forEach((element) => {
           ctx.strokeStyle = "#5eead4";
-          ctx.strokeRect(
-            element.left,
-            element.top,
-            element.width,
-            element.height
-          );
+          if (element.lt != undefined) {
+            ctx.moveTo(element.right, element.bottom)
+            ctx.lineTo(element.right, element.top)
+            ctx.moveTo(element.right, element.bottom)
+            ctx.lineTo(element.left, element.bottom)
+            ctx.moveTo(element.left, element.bottom)
+            ctx.lineTo(element.lt[0], element.lt[1])
+            ctx.moveTo(element.right, element.top)
+            ctx.lineTo(element.lt[0], element.lt[1])
+
+            ctx.closePath()
+            ctx.stroke()
+          } else if (element.rt) {
+            ctx.moveTo(element.left, element.bottom)
+            ctx.lineTo(element.left, element.top)
+            ctx.moveTo(element.left, element.bottom)
+            ctx.lineTo(element.right, element.bottom)
+            ctx.moveTo(element.right, element.bottom)
+            ctx.lineTo(element.rt[0], element.rt[1])
+            ctx.moveTo(element.left, element.top)
+            ctx.lineTo(element.rt[0], element.rt[1])
+            ctx.closePath()
+            ctx.stroke()
+          } else if (element.lb) {
+            ctx.moveTo(element.right, element.top)
+            ctx.lineTo(element.right, element.bottom)
+            ctx.moveTo(element.right, element.top)
+            ctx.lineTo(element.left, element.top)
+            ctx.moveTo(element.left, element.top)
+            ctx.lineTo(element.lb[0], element.lb[1])
+            ctx.moveTo(element.right, element.bottom)
+            ctx.lineTo(element.lb[0], element.lb[1])
+            ctx.closePath()
+            ctx.stroke()
+          } else if (element.rb) {
+            ctx.moveTo(element.left, element.top)
+            ctx.lineTo(element.right, element.top)
+            ctx.moveTo(element.left, element.top)
+            ctx.lineTo(element.left, element.bottom)
+            ctx.moveTo(element.left, element.bottom)
+            ctx.lineTo(element.rb[0], element.rb[1])
+            ctx.moveTo(element.right, element.top)
+            ctx.lineTo(element.rb[0], element.rb[1])
+            ctx.closePath()
+            ctx.stroke()
+          } else {
+            ctx.strokeRect(
+              element.left,
+              element.top,
+              element.width,
+              element.height
+            );
+          }
+
         });
         this.newWidth = e.offsetX - x;
         this.newHeight = e.offsetY - y;
@@ -307,35 +416,28 @@ export default {
       }
     },
     // new object
-    addNewRect(left, top, width, height, active) {
+    addNewRect(left, top, right, bottom, active) {
       for (let i = this.containerItems.length - 1; i >= 0; i--) {
         this.containerItems[i].active = false
       }
-      // отрицательная высота/ширина (реализовано в проверке)
       let push = true;
-      // let bottom;
-      // let right;
-      console.log(left, top, width, height);
-      if (height === 0 && width === 0) {
+
+      if (Math.abs(left - right) === 0 && Math.abs(top - bottom) === 0) {
         push = false
-        // } else if (height < 0) {
-        // } else if (width < 0) {
-        // } else if (height < 0 && width < 0) {
-        //   // bottom += Math.abs(height);
-        //   // top -= Math.abs(height)
-        //   // right += Math.abs(width);
-        //   // left -= Math.abs(width)
-        // } else {
       }
       if (push) {
         this.containerItems.push({
-          width: width,
-          height: height,
+          width: right - left,
+          height: bottom - top,
           left: left,
           top: top,
-          right: left + width,
-          bottom: top + height,
+          right: right,
+          bottom: bottom,
           active: active,
+          lt: this.lt,
+          rt: this.rt,
+          lb: this.lb,
+          rb: this.rb
         });
       }
       console.log(this.containerItems);
@@ -353,29 +455,171 @@ export default {
       ctx.strokeStyle = this.color
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
-        ctx.strokeRect(
-          element.left,
-          element.top,
-          element.width,
-          element.height
-        );
+        if (element.lt != undefined) {
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.right, element.top)
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.left, element.bottom)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.lt[0], element.lt[1])
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.lt[0], element.lt[1])
+          ctx.closePath()
+          ctx.stroke()
+
+        } else if (element.rt != undefined) {
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.left, element.top)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.right, element.bottom)
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else if (element.lb != undefined) {
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.right, element.bottom)
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.left, element.top)
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.right, element.bottom)
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else if (element.rb != undefined) {
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.right, element.top)
+          ctx.moveTo(element.left, element.top)
+          ctx.lineTo(element.left, element.bottom)
+          ctx.moveTo(element.left, element.bottom)
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.moveTo(element.right, element.top)
+          ctx.lineTo(element.rb[0], element.rb[1])
+          ctx.closePath()
+          ctx.stroke()
+        } else {
+          ctx.strokeRect(
+            element.left,
+            element.top,
+            element.width,
+            element.height
+          );
+        }
       });
       if (this.containerItems[index].active) {
         ctx.strokeStyle = this.color
-        ctx.strokeRect(
-          this.containerItems[index].left,
-          this.containerItems[index].top,
-          this.containerItems[index].width,
-          this.containerItems[index].height
-        );
+        if (this.containerItems[index].lt != undefined) {
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+
+          // круги активного 
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+          ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
+
+          ctx.closePath()
+          ctx.stroke()
+
+
+        } else if (this.containerItems[index].rt != undefined) {
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+          ctx.arc(this.containerItems[index].rt[0], this.containerItems[index].rt[1], 10, 0, 2 * Math.PI, false);
+
+          ctx.closePath()
+          ctx.stroke()
+        } else if (this.containerItems[index].lb != undefined) {
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
+
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
+          ctx.arc(this.containerItems[index].lb[0], this.containerItems[index].lb[1], 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+
+
+          ctx.closePath()
+          ctx.stroke()
+        } else if (this.containerItems[index].rb != undefined) {
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
+
+
+
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
+          ctx.arc(this.containerItems[index].rb[0], this.containerItems[index].rb[1], 10, 0, 2 * Math.PI, false);
+
+          ctx.closePath()
+          ctx.stroke()
+        } else {
+
+          ctx.strokeRect(
+            this.containerItems[index].left,
+            this.containerItems[index].top,
+            this.containerItems[index].width,
+            this.containerItems[index].height
+          );
+
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+          ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
+          ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
+        }
+
       }
-      ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-      ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-      ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-      ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-      ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-      ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-      ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
       ctx.lineWidth = 1;
       ctx.strokeStyle = this.color;
       ctx.fillStyle = this.color;

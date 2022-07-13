@@ -32,7 +32,8 @@ export default {
       lt: undefined,
       rt: undefined,
       lb: undefined,
-      rb: undefined
+      rb: undefined,
+      interest: false
     };
   },
   methods: {
@@ -118,9 +119,9 @@ export default {
         ctx.moveTo(event.offsetX, event.offsetY)
         ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
-        ctx.fill();
+        // ctx.strokeStyle = this.color;
+        // ctx.fillStyle = this.color;
+        // ctx.fill();
       }
       else if (this.angle === 'rt') {
         ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
@@ -197,6 +198,17 @@ export default {
         ctx.fillStyle = this.color;
         ctx.fill();
       }
+
+      // if (this.interest) {
+      //   ctx.strokeStyle = 'red';
+      //   ctx.fillStyle = 'red';
+        
+      // } else {
+      //   ctx.strokeStyle = this.color;
+      //   ctx.fillStyle = this.color;
+        
+      // }
+ctx.fill();
       ctx.closePath()
       ctx.stroke()
     },
@@ -253,70 +265,24 @@ export default {
         ctx.moveTo(this.newRight, this.newBottom)
         ctx.arc(this.newRight, this.newBottom, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+
+        ctx.fill();
         for (
           let element = this.containerItems.length - 1;
           element >= 0;
           element--
         ) {
-          if (
-            // лев верх точка
-            (this.newLeft >= this.containerItems[element].left &&
-              this.newLeft <= this.containerItems[element].right &&
-              this.newTop >= this.containerItems[element].top &&
-              this.newTop <= this.containerItems[element].bottom) ||
-            // прав верх точка
-            (this.newRight >= this.containerItems[element].left &&
-              this.newRight <= this.containerItems[element].right &&
-              this.newTop >= this.containerItems[element].top &&
-              this.newTop <= this.containerItems[element].bottom) ||
-            // лев ниж точка
-            (this.newLeft >= this.containerItems[element].left &&
-              this.newLeft <= this.containerItems[element].right &&
-              this.newBottom >= this.containerItems[element].top &&
-              this.newBottom <= this.containerItems[element].bottom) ||
-            // прав верх точка
-            (this.newRight >= this.containerItems[element].left &&
-              this.newRight <= this.containerItems[element].right &&
-              this.newBottom >= this.containerItems[element].top &&
-              this.newBottom <= this.containerItems[element].bottom) ||
-            // ширина больше, пересечение по верхней прямой
-            (this.newLeft < this.containerItems[element].left &&
-              this.newLeft < this.containerItems[element].right &&
-              this.newRight > this.containerItems[element].left &&
-              this.newRight > this.containerItems[element].right &&
-              this.newTop >= this.containerItems[element].top &&
-              this.newTop <= this.containerItems[element].bottom) ||
-            // ширина больше, пересечение по нижней прямой
-            (this.newLeft < this.containerItems[element].left &&
-              this.newLeft < this.containerItems[element].right &&
-              this.newRight > this.containerItems[element].left &&
-              this.newRight > this.containerItems[element].right &&
-              this.newBottom >= this.containerItems[element].top &&
-              this.newBottom <= this.containerItems[element].bottom) ||
-            // высота больше, пересечение по левой прямой
-            (this.newTop < this.containerItems[element].top &&
-              this.newTop < this.containerItems[element].bottom &&
-              this.newBottom > this.containerItems[element].top &&
-              this.newBottom > this.containerItems[element].bottom &&
-              this.newLeft >= this.containerItems[element].left &&
-              this.newLeft <= this.containerItems[element].right) ||
-            // высота больше, пересечение по правой прямой
-            (this.newTop < this.containerItems[element].top &&
-              this.newTop < this.containerItems[element].bottom &&
-              this.newBottom > this.containerItems[element].top &&
-              this.newBottom > this.containerItems[element].bottom &&
-              this.newRight >= this.containerItems[element].left &&
-              this.newRight <= this.containerItems[element].right)
-          ) {
+          this.lineInterest(this.lt, this.rt, this.lb, this.rb)
+          if (this.interest) {
             ctx.strokeStyle = "red";
             ctx.fillStyle = "red";
           }
+          else {
+            ctx.fillStyle = this.color;
+            ctx.strokeStyle = this.color;
+          }
         }
-        ctx.fill();
         ctx.strokeRect(x, y, this.newWidth, this.newHeight);
-
       }
     },
     // new object
@@ -416,7 +382,6 @@ export default {
       if (ctx.isPointInPath(x, y)) {
         this.flag -= 100000;
         this.changeActive(index);
-        console.log('yes');
       }
 
       ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
@@ -426,7 +391,6 @@ export default {
       if (ctx.isPointInPath(x, y)) {
         this.flag -= 100000;
         this.changeActive(index);
-        console.log('yes');
       };
 
       ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
@@ -436,8 +400,41 @@ export default {
       if (ctx.isPointInPath(x, y)) {
         this.flag -= 100000;
         this.changeActive(index);
-        console.log('yes');
       };
+    },
+    lineInterest(lt, rt, lb, rb) {
+      console.log(lt, rt, lb, rb);
+      const canvas = document.getElementById("canvass");
+      let context = canvas.getContext("2d");
+
+      context.beginPath()
+      this.containerItems.forEach(element => {
+        if (element.lt[0] === 0 && element.lt[1] === 0 && element.rt[0] === 0 && element.rt[1] === 0 && element.lb[0] === 0 && element.lb[1] === 0 && element.rb[0] === 0 && element.rb[1] === 0) {
+          this.interest = false;
+        } else {
+          context.moveTo(element.lt[0], element.lt[1])
+          context.lineTo(element.rt[0], element.rt[1])
+          context.lineTo(element.lb[0], element.lb[1])
+          context.closePath()
+          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
+            this.interest = true
+          }
+          context.moveTo(element.rb[0], element.rb[1])
+          context.lineTo(element.rt[0], element.rt[1])
+          context.lineTo(element.lb[0], element.lb[1])
+          context.closePath()
+          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
+            this.interest = true
+          }
+          context.moveTo(element.rt[0], element.rt[1])
+          context.lineTo(element.lt[0], element.lt[1])
+          context.lineTo(element.rb[0], element.rb[1])
+          context.closePath()
+          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
+            this.interest = true
+          }
+        }
+      })
     },
   },
 };
@@ -450,4 +447,10 @@ export default {
     </canvas>
   </div>
 </template>
-<!-- 1) разбить на треугольник и реализация с помощью треугольников http://cyber-code.ru/tochka_v_treugolnike/ -->
+<!-- https://stackovergo.com/ru/q/2326403/test-if-two-lines-intersect---javascript-function
+    сделать проверку на пересечение каждого отрезка
+ -->
+ <!-- 1) строим область , делаем проверку на пересечение по линиям или точкам
+ 2) если есть пересечение пересекаемая область становится красной
+ 3) елси нет она остается зеленой
+ 4) при растягивании точки делаем проверку на пересечение по л или т, если true делаем красным, иначе остается зеленой -->

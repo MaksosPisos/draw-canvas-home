@@ -42,10 +42,7 @@ export default {
       // если ширина и длина отрицательны
       // || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right)  && (e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top))
       for (let i = this.containerItems.length - 1; i >= 0; i--) {
-        if (((e.offsetX >= this.containerItems[i].left && e.offsetX <= this.containerItems[i].left + this.containerItems[i].width) && (e.offsetY >= this.containerItems[i].top && e.offsetY <= this.containerItems[i].top + this.containerItems[i].height)) || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right) && (e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top)) || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right) && (e.offsetY >= this.containerItems[i].top && e.offsetY <= this.containerItems[i].top + this.containerItems[i].height)) || ((e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top) && (e.offsetX >= this.containerItems[i].left && e.offsetX <= this.containerItems[i].left + this.containerItems[i].width))) {
-          this.flag -= 100000;
-          this.changeActive(i);
-        }
+        this.checkPoint(i, e.offsetX, e.offsetY)
         // угол который будем двигать у активной области
         if ((e.offsetX <= this.containerItems[i].lt[0] + 10 && e.offsetX >= this.containerItems[i].lt[0] - 10) && (e.offsetY <= this.containerItems[i].lt[1] + 10 && e.offsetY >= this.containerItems[i].lt[1] - 10)) {
           window.addEventListener('mousemove', this.drawPath)
@@ -83,119 +80,20 @@ export default {
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      this.containerItems.forEach((element) => {
-        ctx.strokeStyle = "#5eead4";
-        ctx.moveTo(element.rb[0], element.rb[1])
-        ctx.lineTo(element.rt[0], element.rt[1])
-        ctx.moveTo(element.rb[0], element.rb[1])
-        ctx.lineTo(element.lb[0], element.lb[1])
-        ctx.moveTo(element.lb[0], element.lb[1])
-        ctx.lineTo(element.lt[0], element.lt[1])
-        ctx.moveTo(element.rt[0], element.rt[1])
-        ctx.lineTo(element.lt[0], element.lt[1])
-        ctx.closePath()
-        ctx.stroke()
-        // if (element.lt != undefined && element.rt != undefined && element.lb != undefined && element.rb != undefined) {
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.lb[0], element.lb[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.rt[0], element.rt[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        // } else if (element.lt != undefined && element.rt != undefined && element.lb != undefined) {
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.lb[0], element.lb[1])
-        //   ctx.lineTo(element.right, element.bottom)
-        //   ctx.moveTo(element.rt[0], element.rt[1])
-        //   ctx.lineTo(element.right, element.bottom)
-        // }
-        // else if (element.lt != undefined && element.rt != undefined && element.rb != undefined) {
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.left, element.bottom)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.rt[0], element.rt[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        // }
-        // else if (element.lt != undefined && element.rb != undefined && element.lb != undefined) {
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.right, element.top)
-        //   ctx.moveTo(element.lt[0], element.lt[1])
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.lb[0], element.lb[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        // }
-        // else if (element.rt != undefined && element.rb != undefined && element.lb != undefined) {
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.lb[0], element.lb[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.rt[0], element.rt[1])
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        // }
-        // else if (element.lt != undefined) {
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.right, element.top)
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.left, element.bottom)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.lt[0], element.lt[1])
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.lt[0], element.lt[1])
-
-        // } else if (element.rt != undefined) {
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.left, element.top)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.right, element.bottom)
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (element.lb != undefined) {
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.right, element.bottom)
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.left, element.top)
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (element.rb != undefined) {
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.right, element.top)
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.left, element.bottom)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else {
-        //   ctx.strokeRect(
-        //     element.left,
-        //     element.top,
-        //     element.width,
-        //     element.height
-        //   );
-        // }
-      });
+      this.drawAll()
+      // this.containerItems.forEach((element) => {
+      //   ctx.strokeStyle = "#5eead4";
+      //   ctx.moveTo(element.rb[0], element.rb[1])
+      //   ctx.lineTo(element.rt[0], element.rt[1])
+      //   ctx.moveTo(element.rb[0], element.rb[1])
+      //   ctx.lineTo(element.lb[0], element.lb[1])
+      //   ctx.moveTo(element.lb[0], element.lb[1])
+      //   ctx.lineTo(element.lt[0], element.lt[1])
+      //   ctx.moveTo(element.rt[0], element.rt[1])
+      //   ctx.lineTo(element.lt[0], element.lt[1])
+      //   ctx.closePath()
+      //   ctx.stroke()
+      // });
       if (this.angle === 'rb') {
         // линии
         ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
@@ -299,10 +197,8 @@ export default {
         ctx.fillStyle = this.color;
         ctx.fill();
       }
-      
       ctx.closePath()
       ctx.stroke()
-      // this.containerItems.splice(this.index, 1)
     },
     drawPathMouseup(e) {
       window.removeEventListener('mousemove', this.drawPath);
@@ -312,10 +208,15 @@ export default {
       if (this.flag > 0) {
         this.addNewRect(this.newLeft, this.newTop, this.newRight, this.newBottom, false);
       }
-      // this.addNewRect(this.newLeft, this.newTop, this.newRight, this.newBottom, false);
-      this.flag = false;
+      // обнуляем
+      this.flag = -1;
       this.newHeight = 0;
       this.newWidth = 0;
+      this.newLeft = 0;
+      this.newRight = 0;
+      this.newTop = 0;
+      this.newBottom = 0;
+
     },
     mousemove(e) {
       if (this.flag > 0) {
@@ -331,75 +232,7 @@ export default {
         let y = this.y;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
-        this.containerItems.forEach((element) => {
-          ctx.strokeStyle = "#5eead4";
-          ctx.moveTo(element.rb[0], element.rb[1])
-          ctx.lineTo(element.rt[0], element.rt[1])
-          ctx.moveTo(element.rb[0], element.rb[1])
-          ctx.lineTo(element.lb[0], element.lb[1])
-          ctx.moveTo(element.lb[0], element.lb[1])
-          ctx.lineTo(element.lt[0], element.lt[1])
-          ctx.moveTo(element.rt[0], element.rt[1])
-          ctx.lineTo(element.lt[0], element.lt[1])
-          ctx.closePath()
-          ctx.stroke()
-        });
-
-
-        // if (element.lt != undefined) {
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.right, element.top)
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.left, element.bottom)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.lt[0], element.lt[1])
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.lt[0], element.lt[1])
-
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (element.rt) {
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.left, element.top)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.right, element.bottom)
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.rt[0], element.rt[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (element.lb) {
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.right, element.bottom)
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.left, element.top)
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.moveTo(element.right, element.bottom)
-        //   ctx.lineTo(element.lb[0], element.lb[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (element.rb) {
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.right, element.top)
-        //   ctx.moveTo(element.left, element.top)
-        //   ctx.lineTo(element.left, element.bottom)
-        //   ctx.moveTo(element.left, element.bottom)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.moveTo(element.right, element.top)
-        //   ctx.lineTo(element.rb[0], element.rb[1])
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else {
-        //   ctx.strokeRect(
-        //     element.left,
-        //     element.top,
-        //     element.width,
-        //     element.height
-        //   );
-        // }
-
+        this.drawAll();
 
         this.newWidth = e.offsetX - x;
         this.newHeight = e.offsetY - y;
@@ -411,23 +244,7 @@ export default {
         this.lb = [this.newLeft, this.newBottom]
         this.rt = [this.newRight, this.newTop]
         this.rb = [this.newRight, this.newBottom]
-        // if (this.containerItems.length > 0) {
-        //   for (let i = this.containerItems.length - 1; i >= 0; i--) {
-        //     if (this.containerItems[i].active === true) {
-        //       ctx.arc(this.containerItems[i].left, this.containerItems[i].top, 10, 0, 2 * Math.PI, false);
-        //       ctx.moveTo(this.containerItems[i].right, this.containerItems[i].top)
-        //       ctx.arc(this.containerItems[i].right, this.containerItems[i].top, 10, 0, 2 * Math.PI, false);
-        //       ctx.moveTo(this.containerItems[i].left, this.containerItems[i].bottom)
-        //       ctx.arc(this.containerItems[i].left, this.containerItems[i].bottom, 10, 0, 2 * Math.PI, false);
-        //       ctx.moveTo(this.containerItems[i].right, this.containerItems[i].bottom)
-        //       ctx.arc(this.containerItems[i].right, this.containerItems[i].bottom, 10, 0, 2 * Math.PI, false);
-        //       ctx.lineWidth = 1;
-        //       ctx.strokeStyle = this.color;
-        //       ctx.fillStyle = this.color;
-        //       console.log(i);
-        //     }
-        //   }
-        // }
+
         ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.newRight, y)
         ctx.arc(this.newRight, y, 10, 0, 2 * Math.PI, false);
@@ -508,7 +325,7 @@ export default {
         this.containerItems[i].active = false
       }
       let push = true;
-
+      // не пушим при клике по пустой области
       if (Math.abs(left - right) === 0 && Math.abs(top - bottom) === 0) {
         push = false
       }
@@ -530,16 +347,11 @@ export default {
       console.log(this.containerItems);
       //  отрисовывать крайние точки у области с active true
     },
-    changeActive(index) {
-      for (let i = this.containerItems.length - 1; i >= 0; i--) {
-        this.containerItems[i].active = false;
-      }
-      this.containerItems[index].active = true;
+    drawAll() {
       const canvas = document.getElementById("canvass");
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      ctx.strokeStyle = this.color
       this.containerItems.forEach((element) => {
         ctx.strokeStyle = "#5eead4";
         ctx.moveTo(element.rb[0], element.rb[1])
@@ -553,7 +365,18 @@ export default {
         ctx.closePath()
         ctx.stroke()
       });
-
+    },
+    changeActive(index) {
+      for (let i = this.containerItems.length - 1; i >= 0; i--) {
+        this.containerItems[i].active = false;
+      }
+      this.containerItems[index].active = true;
+      const canvas = document.getElementById("canvass");
+      let ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.strokeStyle = this.color
+      this.drawAll();
       if (this.containerItems[index].active) {
         ctx.strokeStyle = this.color
         ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
@@ -573,121 +396,48 @@ export default {
         ctx.arc(this.containerItems[index].lb[0], this.containerItems[index].lb[1], 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
         ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
-
         ctx.closePath()
         ctx.stroke()
-        // if (this.containerItems[index].lt != undefined) {
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-
-        //   // круги активного 
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-        //   ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
-
-
-
-
-        // } else if (this.containerItems[index].rt != undefined) {
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
-        //   ctx.arc(this.containerItems[index].rt[0], this.containerItems[index].rt[1], 10, 0, 2 * Math.PI, false);
-
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (this.containerItems[index].lb != undefined) {
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
-        //   ctx.arc(this.containerItems[index].lb[0], this.containerItems[index].lb[1], 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-
-
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else if (this.containerItems[index].rb != undefined) {
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-
-
-
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
-        //   ctx.arc(this.containerItems[index].rb[0], this.containerItems[index].rb[1], 10, 0, 2 * Math.PI, false);
-
-        //   ctx.closePath()
-        //   ctx.stroke()
-        // } else {
-
-        //   ctx.strokeRect(
-        //     this.containerItems[index].left,
-        //     this.containerItems[index].top,
-        //     this.containerItems[index].width,
-        //     this.containerItems[index].height
-        //   );
-
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].top)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].top, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].left, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].left, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        //   ctx.moveTo(this.containerItems[index].right, this.containerItems[index].bottom)
-        //   ctx.arc(this.containerItems[index].right, this.containerItems[index].bottom, 10, 0, 2 * Math.PI, false);
-        // }
-
       }
       ctx.lineWidth = 1;
       ctx.strokeStyle = this.color;
       ctx.fillStyle = this.color;
       ctx.fill();
+    },
+    checkPoint(index, x, y) {
+      const canvas = document.getElementById("canvass");
+      let ctx = canvas.getContext("2d");
+
+      ctx.beginPath()
+      ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+      ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+      ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
+      ctx.closePath()
+      if (ctx.isPointInPath(x, y)) {
+        this.flag -= 100000;
+        this.changeActive(index);
+        console.log('yes');
+      }
+
+      ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+      ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
+      ctx.lineTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
+      ctx.closePath()
+      if (ctx.isPointInPath(x, y)) {
+        this.flag -= 100000;
+        this.changeActive(index);
+        console.log('yes');
+      };
+
+      ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
+      ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
+      ctx.lineTo(this.containerItems[index].lb[0], this.containerItems[index].lb[1])
+      ctx.closePath()
+      if (ctx.isPointInPath(x, y)) {
+        this.flag -= 100000;
+        this.changeActive(index);
+        console.log('yes');
+      };
     },
   },
 };
@@ -700,5 +450,4 @@ export default {
     </canvas>
   </div>
 </template>
-<!-- при клике по области менять active, и перерисовывать цвет.... -->
-<!-- когда смещается крайняя точка задавать lt rt lb rb -->
+<!-- 1) разбить на треугольник и реализация с помощью треугольников http://cyber-code.ru/tochka_v_treugolnike/ -->

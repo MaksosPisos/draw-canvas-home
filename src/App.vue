@@ -81,11 +81,12 @@ export default {
     },
     // рисуем линии
     drawPath(event) {
+      this.changeActive(this.index)
       window.addEventListener('mouseup', this.drawPathMouseup)
       const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.drawAll()
+      this.drawAll(true)
       ctx.beginPath();
 
       if (this.angle === 'rb') {
@@ -118,7 +119,7 @@ export default {
       ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
       ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
 
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 4;
 
       this.interest = false;
 
@@ -187,7 +188,7 @@ export default {
         ctx.arc(x, this.newBottom, 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.newRight, this.newBottom)
         ctx.arc(this.newRight, this.newBottom, 10, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 4;
         ctx.fill();
 
         this.interest = false;
@@ -230,23 +231,28 @@ export default {
         });
       }
     },
-    drawAll() {
+    drawAll(activeItem) {
       const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
       this.containerItems.forEach((element) => {
-        ctx.strokeStyle = "#5eead4";
-        ctx.moveTo(element.rb[0], element.rb[1])
-        ctx.lineTo(element.rt[0], element.rt[1])
-        ctx.moveTo(element.rb[0], element.rb[1])
-        ctx.lineTo(element.lb[0], element.lb[1])
-        ctx.moveTo(element.lb[0], element.lb[1])
-        ctx.lineTo(element.lt[0], element.lt[1])
-        ctx.moveTo(element.rt[0], element.rt[1])
-        ctx.lineTo(element.lt[0], element.lt[1])
-        ctx.closePath()
-        ctx.stroke()
+        if (activeItem && element.active) {
+
+        } else {
+          ctx.strokeStyle = "#5eead4";
+          ctx.moveTo(element.rb[0], element.rb[1])
+          ctx.lineTo(element.rt[0], element.rt[1])
+          ctx.moveTo(element.rb[0], element.rb[1])
+          ctx.lineTo(element.lb[0], element.lb[1])
+          ctx.moveTo(element.lb[0], element.lb[1])
+          ctx.lineTo(element.lt[0], element.lt[1])
+          ctx.moveTo(element.rt[0], element.rt[1])
+          ctx.lineTo(element.lt[0], element.lt[1])
+          ctx.lineWidth = 1;
+          ctx.closePath()
+          ctx.stroke()
+        }
       });
     },
     changeActive(index) {
@@ -257,7 +263,7 @@ export default {
       const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.drawAll();
+      this.drawAll(true);
       ctx.beginPath();
       if (this.containerItems[index].active) {
         this.interest = false;
@@ -279,7 +285,7 @@ export default {
         ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
         ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
 
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 4;
         if (this.interest) {
           ctx.strokeStyle = "red";
           ctx.fillStyle = "red";

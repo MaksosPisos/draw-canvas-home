@@ -119,9 +119,19 @@ export default {
         ctx.moveTo(event.offsetX, event.offsetY)
         ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
+        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
+        if (this.interest) {
+          console.log('yes');
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
+        }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
         // ctx.strokeStyle = this.color;
         // ctx.fillStyle = this.color;
-        // ctx.fill();
+        ctx.fill();
       }
       else if (this.angle === 'rt') {
         ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
@@ -144,8 +154,18 @@ export default {
         ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
         ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
+        if (this.interest) {
+          console.log('yes');
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
+        }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
+        // ctx.strokeStyle = this.color;
+        // ctx.fillStyle = this.color;
         ctx.fill();
 
       } else if (this.angle === 'lt') {
@@ -169,8 +189,18 @@ export default {
         ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
         ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
+        if (this.interest) {
+          console.log('yes');
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
+        }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
+        // ctx.strokeStyle = this.color;
+        // ctx.fillStyle = this.color;
         ctx.fill();
 
       } else if (this.angle === 'lb') {
@@ -194,21 +224,31 @@ export default {
         ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
         ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
+        if (this.interest) {
+          console.log('yes');
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
+        }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
+        // ctx.strokeStyle = this.color;
+        // ctx.fillStyle = this.color;
         ctx.fill();
       }
 
       // if (this.interest) {
       //   ctx.strokeStyle = 'red';
       //   ctx.fillStyle = 'red';
-        
+
       // } else {
       //   ctx.strokeStyle = this.color;
       //   ctx.fillStyle = this.color;
-        
+
       // }
-ctx.fill();
+      ctx.fill();
       ctx.closePath()
       ctx.stroke()
     },
@@ -267,21 +307,26 @@ ctx.fill();
         ctx.lineWidth = 1;
 
         ctx.fill();
-        for (
-          let element = this.containerItems.length - 1;
-          element >= 0;
-          element--
-        ) {
-          this.lineInterest(this.lt, this.rt, this.lb, this.rb)
-          if (this.interest) {
-            ctx.strokeStyle = "red";
-            ctx.fillStyle = "red";
-          }
-          else {
-            ctx.fillStyle = this.color;
-            ctx.strokeStyle = this.color;
-          }
+
+        // for (
+        //   let element = this.containerItems.length - 1;
+        //   element >= 0;
+        //   element--
+        // ) {
+
+        this.lineInterest(this.lt, this.rt, this.lb, this.rb)
+        if (this.interest) {
+          console.log('yes');
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
         }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
+
+
+        // }
         ctx.strokeRect(x, y, this.newWidth, this.newHeight);
       }
     },
@@ -365,6 +410,14 @@ ctx.fill();
         ctx.closePath()
         ctx.stroke()
       }
+      //       this.lineInterest(this.containerItems[index].lt, this.containerItems[index].rt, this.containerItems[index].lb, this.containerItems[index].rb)
+      // if (this.interest) {
+      //   ctx.strokeStyle = 'red'
+      //   ctx.fillStyle = 'red';
+      // } else {
+      //   ctx.strokeStyle = this.color
+      //   ctx.fillStyle = this.color;
+      // }
       ctx.lineWidth = 1;
       ctx.strokeStyle = this.color;
       ctx.fillStyle = this.color;
@@ -403,38 +456,219 @@ ctx.fill();
       };
     },
     lineInterest(lt, rt, lb, rb) {
-      console.log(lt, rt, lb, rb);
-      const canvas = document.getElementById("canvass");
-      let context = canvas.getContext("2d");
 
-      context.beginPath()
-      this.containerItems.forEach(element => {
-        if (element.lt[0] === 0 && element.lt[1] === 0 && element.rt[0] === 0 && element.rt[1] === 0 && element.lb[0] === 0 && element.lb[1] === 0 && element.rb[0] === 0 && element.rb[1] === 0) {
+      let det = 0;
+      let gamma = 0;
+      let lambda = 0;
+      // if (this.containerItems.length > 0) {
+      for (let element = this.containerItems.length - 1;
+        element >= 1;
+        element--) {
+        // lt rt пересекается с lt rt
+        det = (rt[0] - lt[0]) * (this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].rt[0] - this.containerItems[element].lt[0]) * (rt[1] - lt[1])
+        if (det === 0) {
           this.interest = false;
         } else {
-          context.moveTo(element.lt[0], element.lt[1])
-          context.lineTo(element.rt[0], element.rt[1])
-          context.lineTo(element.lb[0], element.lb[1])
-          context.closePath()
-          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
-            this.interest = true
-          }
-          context.moveTo(element.rb[0], element.rb[1])
-          context.lineTo(element.rt[0], element.rt[1])
-          context.lineTo(element.lb[0], element.lb[1])
-          context.closePath()
-          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
-            this.interest = true
-          }
-          context.moveTo(element.rt[0], element.rt[1])
-          context.lineTo(element.lt[0], element.lt[1])
-          context.lineTo(element.rb[0], element.rb[1])
-          context.closePath()
-          if (context.isPointInPath(lt[0], lt[1]) || context.isPointInPath(rt[0], rt[1]) || context.isPointInPath(rb[0], rb[1]) || context.isPointInPath(lb[0], lb[1])) {
-            this.interest = true
+          lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
+          gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
+          this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+        }
+        // from (a,b)->(c,d) intersects with (p,q)->(r,s)
+        // var det, gamma, lambda;
+        // det = (c - a) * (s - q) - (r - p) * (d - b);
+        // if (det === 0) {
+        //   return false;
+        // } else {
+        //   lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+        //   gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+        //   return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+        // }
+        if (this.interest === false) {
+          // lt rt с rt rb
+          det = (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].rt[0]) * (rt[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
           }
         }
-      })
+        if (this.interest === false) {
+          // lt rt с lt lb
+          det = (rt[0] - lt[0]) * (this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].lb[0] - this.containerItems[element].lt[0]) * (rt[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
+            gamma = ((lt[1] - rt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lt rt с lb rb
+          det = (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].lb[0]) * (rt[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lt lb с lt rt
+          det = (lb[0] - lt[0]) * (this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].rt[0] - this.containerItems[element].lt[0]) * (lb[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
+            gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rt[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lt lb с rt rb
+          det = (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].rt[0]) * (lb[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lt lb с lt lb
+
+          det = (lb[0] - lt[0]) * (this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].lb[0] - this.containerItems[element].lt[0]) * (lb[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
+            gamma = ((lt[1] - lb[1]) * (this.containerItems[element].lb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lt lb с lb rb
+          det = (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].lb[0]) * (lb[1] - lt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // rt rb с lt rt
+          det = (rb[0] - rt[0]) * (this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].rt[0] - this.containerItems[element].lt[0]) * (rb[1] - rt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - rt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - rt[1])) / det;
+            gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rt[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rt[1] - rt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // rt rb с rt rb
+
+          det = (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].rt[0]) * (rb[1] - rt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - rt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
+            gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // rt rb с lt lb
+
+          det = (rb[0] - rt[0]) * (this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].lb[0] - this.containerItems[element].lt[0]) * (rb[1] - rt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - rt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - rt[1])) / det;
+            gamma = ((rt[1] - rb[1]) * (this.containerItems[element].lb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].lb[1] - rt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // rt rb с lb rb
+
+          det = (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].lb[0]) * (rb[1] - rt[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
+            gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lb rb с lt rt
+          det = (rb[0] - lb[0]) * (this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].rt[0] - this.containerItems[element].lt[0]) * (rb[1] - lb[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lb[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lb[1])) / det;
+            gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rt[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rt[1] - lb[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lb rb с rt rb
+
+          det = (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].rt[0]) * (rb[1] - lb[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lb[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
+            gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lb rb с lt lb
+          det = (rb[0] - lb[0]) * (this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].lb[0] - this.containerItems[element].lt[0]) * (rb[1] - lb[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lb[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lb[1])) / det;
+            gamma = ((lb[1] - rb[1]) * (this.containerItems[element].lb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].lb[1] - lb[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+        if (this.interest === false) {
+          // lb rb с lb rb
+          det = (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) - (this.containerItems[element].rb[0] - this.containerItems[element].lb[0]) * (rb[1] - lb[1])
+          if (det === 0) {
+            this.interest = false;
+          } else {
+            lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
+            gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
+            this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          }
+        }
+      }
+      // }
+      // if (this.containerItems.length > 1) {
+      //   this.containerItems.forEach(element => {
+      //     // срвавниваем новый лт и рт со всеми линиями предыдущих областей
+      //     det = (rt[0] - lt[0]) * (element.rt[1] - element.lt[1]) - (element.rt[0] - element.lt[0]) * (rt[1] - lt[1])
+      //     if (det === 0) {
+      //       this.interest = false;
+      //     } else {
+      //       lambda = ((element.rt[1] - element.lt[1]) * (element.rt[0] - lt[0]) + (element.lt[0] - element.rt[0]) * (element.rt[1] - lt[1])) / det;
+      //       gamma = ((lt[1] - rt[1]) * (element.rt[0] - lt[0]) + (rt[0] - lt[0]) * (element.rt[1] - lt[1])) / det;
+      //       this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+      //     }
+      //   })
+      // }
+
     },
   },
 };

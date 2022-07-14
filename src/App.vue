@@ -1,3 +1,11 @@
+<template>
+  <div class="">
+    <canvas id="canvass" width="1000" height="600" class="bg-slate-800 bg-[url('../public/bg-canvas.jpg')] mx-auto my-4"
+      @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup" ref="canvas">
+    </canvas>
+  </div>
+</template>
+
 <script>
 export default {
   data() {
@@ -38,10 +46,7 @@ export default {
   },
   methods: {
     mousedown(e) {
-      console.log(e.offsetX, e.offsetY);
       // проверка клика по области
-      // если ширина и длина отрицательны
-      // || ((e.offsetX <= this.containerItems[i].left && e.offsetX >= this.containerItems[i].right)  && (e.offsetY >= this.containerItems[i].bottom && e.offsetY <= this.containerItems[i].top))
       for (let i = this.containerItems.length - 1; i >= 0; i--) {
         this.checkPoint(i, e.offsetX, e.offsetY)
         // угол который будем двигать у активной области
@@ -77,180 +82,59 @@ export default {
     // рисуем линии
     drawPath(event) {
       window.addEventListener('mouseup', this.drawPathMouseup)
-      const canvas = document.getElementById("canvass");
+      const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
       this.drawAll()
-      // this.containerItems.forEach((element) => {
-      //   ctx.strokeStyle = "#5eead4";
-      //   ctx.moveTo(element.rb[0], element.rb[1])
-      //   ctx.lineTo(element.rt[0], element.rt[1])
-      //   ctx.moveTo(element.rb[0], element.rb[1])
-      //   ctx.lineTo(element.lb[0], element.lb[1])
-      //   ctx.moveTo(element.lb[0], element.lb[1])
-      //   ctx.lineTo(element.lt[0], element.lt[1])
-      //   ctx.moveTo(element.rt[0], element.rt[1])
-      //   ctx.lineTo(element.lt[0], element.lt[1])
-      //   ctx.closePath()
-      //   ctx.stroke()
-      // });
-      if (this.angle === 'rb') {
-        // линии
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.lineTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.lineTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
+      ctx.beginPath();
 
+      if (this.angle === 'rb') {
         // создаем координату сдвинутой крайней точки
         this.containerItems[this.index].rb = [event.offsetX, event.offsetY]
-
-        // круг
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.arc(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.arc(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.arc(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(event.offsetX, event.offsetY)
-        ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1;
-        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
-        if (this.interest) {
-          console.log('yes');
-          ctx.strokeStyle = "red";
-          ctx.fillStyle = "red";
-        }
-        else {
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = this.color;
-        }
-        // ctx.strokeStyle = this.color;
-        // ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-      else if (this.angle === 'rt') {
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.lineTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.lineTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-
+      } else if (this.angle === 'rt') {
         this.containerItems[this.index].rt = [event.offsetX, event.offsetY]
 
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.arc(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(event.offsetX, event.offsetY)
-        ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.arc(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1;
-        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
-        if (this.interest) {
-          console.log('yes');
-          ctx.strokeStyle = "red";
-          ctx.fillStyle = "red";
-        }
-        else {
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = this.color;
-        }
-        // ctx.strokeStyle = this.color;
-        // ctx.fillStyle = this.color;
-        ctx.fill();
-
       } else if (this.angle === 'lt') {
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.lineTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.lineTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-
         this.containerItems[this.index].lt = [event.offsetX, event.offsetY]
 
-        ctx.moveTo(event.offsetX, event.offsetY)
-        ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.arc(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
-        ctx.arc(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1;
-        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
-        if (this.interest) {
-          console.log('yes');
-          ctx.strokeStyle = "red";
-          ctx.fillStyle = "red";
-        }
-        else {
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = this.color;
-        }
-        // ctx.strokeStyle = this.color;
-        // ctx.fillStyle = this.color;
-        ctx.fill();
-
       } else if (this.angle === 'lb') {
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.lineTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.lineTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.lineTo(event.offsetX, event.offsetY)
-
         this.containerItems[this.index].lb = [event.offsetX, event.offsetY]
-
-        ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
-        ctx.arc(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
-        ctx.arc(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1], 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(event.offsetX, event.offsetY)
-        ctx.arc(event.offsetX, event.offsetY, 10, 0, 2 * Math.PI, false);
-        ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
-        ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 1;
-        this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
-        if (this.interest) {
-          console.log('yes');
-          ctx.strokeStyle = "red";
-          ctx.fillStyle = "red";
-        }
-        else {
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = this.color;
-        }
-        // ctx.strokeStyle = this.color;
-        // ctx.fillStyle = this.color;
-        ctx.fill();
       }
+      ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
+      ctx.lineTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
+      ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
+      ctx.lineTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
+      ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
+      ctx.lineTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
+      ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
+      ctx.lineTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
 
-      // if (this.interest) {
-      //   ctx.strokeStyle = 'red';
-      //   ctx.fillStyle = 'red';
+      ctx.moveTo(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1])
+      ctx.arc(this.containerItems[this.index].lt[0], this.containerItems[this.index].lt[1], 10, 0, 2 * Math.PI, false);
+      ctx.moveTo(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1])
+      ctx.arc(this.containerItems[this.index].rt[0], this.containerItems[this.index].rt[1], 10, 0, 2 * Math.PI, false);
+      ctx.moveTo(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1])
+      ctx.arc(this.containerItems[this.index].lb[0], this.containerItems[this.index].lb[1], 10, 0, 2 * Math.PI, false)
+      ctx.moveTo(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1])
+      ctx.arc(this.containerItems[this.index].rb[0], this.containerItems[this.index].rb[1], 10, 0, 2 * Math.PI, false);
 
-      // } else {
-      //   ctx.strokeStyle = this.color;
-      //   ctx.fillStyle = this.color;
+      ctx.lineWidth = 1;
 
-      // }
-      ctx.fill();
+      this.interest = false;
+
+      this.lineInterest(this.containerItems[this.index].lt, this.containerItems[this.index].rt, this.containerItems[this.index].lb, this.containerItems[this.index].rb)
+      if (this.interest) {
+        ctx.strokeStyle = "red";
+        ctx.fillStyle = "red";
+      }
+      else {
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = this.color;
+      }
       ctx.closePath()
       ctx.stroke()
+      ctx.fill();
+
     },
     drawPathMouseup(e) {
       window.removeEventListener('mousemove', this.drawPath);
@@ -278,14 +162,13 @@ export default {
     // отрисовка дефолтных четырехугольников
     drawRect(e) {
       if (this.flag >= 0) {
-        const canvas = document.getElementById("canvass");
+        const canvas = this.$refs.canvas
         let ctx = canvas.getContext("2d");
         let x = this.x;
         let y = this.y;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         this.drawAll();
-
         this.newWidth = e.offsetX - x;
         this.newHeight = e.offsetY - y;
         this.newLeft = x;
@@ -305,15 +188,9 @@ export default {
         ctx.moveTo(this.newRight, this.newBottom)
         ctx.arc(this.newRight, this.newBottom, 10, 0, 2 * Math.PI, false);
         ctx.lineWidth = 1;
-
         ctx.fill();
 
-        // for (
-        //   let element = this.containerItems.length - 1;
-        //   element >= 0;
-        //   element--
-        // ) {
-
+        this.interest = false;
         this.lineInterest(this.lt, this.rt, this.lb, this.rb)
         if (this.interest) {
           console.log('yes');
@@ -324,9 +201,6 @@ export default {
           ctx.fillStyle = this.color;
           ctx.strokeStyle = this.color;
         }
-
-
-        // }
         ctx.strokeRect(x, y, this.newWidth, this.newHeight);
       }
     },
@@ -355,11 +229,9 @@ export default {
           rb: this.rb
         });
       }
-      console.log(this.containerItems);
-      //  отрисовывать крайние точки у области с active true
     },
     drawAll() {
-      const canvas = document.getElementById("canvass");
+      const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
@@ -382,14 +254,14 @@ export default {
         this.containerItems[i].active = false;
       }
       this.containerItems[index].active = true;
-      const canvas = document.getElementById("canvass");
+      const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-      ctx.strokeStyle = this.color
       this.drawAll();
+      ctx.beginPath();
       if (this.containerItems[index].active) {
-        ctx.strokeStyle = this.color
+        this.interest = false;
+        this.lineInterest(this.containerItems[index].lt, this.containerItems[index].rt, this.containerItems[index].lb, this.containerItems[index].rb)
         ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
         ctx.lineTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
         ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
@@ -398,7 +270,6 @@ export default {
         ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
         ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
         ctx.lineTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
-
         ctx.moveTo(this.containerItems[index].rb[0], this.containerItems[index].rb[1])
         ctx.arc(this.containerItems[index].rb[0], this.containerItems[index].rb[1], 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.containerItems[index].rt[0], this.containerItems[index].rt[1])
@@ -407,24 +278,23 @@ export default {
         ctx.arc(this.containerItems[index].lb[0], this.containerItems[index].lb[1], 10, 0, 2 * Math.PI, false);
         ctx.moveTo(this.containerItems[index].lt[0], this.containerItems[index].lt[1])
         ctx.arc(this.containerItems[index].lt[0], this.containerItems[index].lt[1], 10, 0, 2 * Math.PI, false);
+
+        ctx.lineWidth = 1;
+        if (this.interest) {
+          ctx.strokeStyle = "red";
+          ctx.fillStyle = "red";
+        }
+        else {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+        }
         ctx.closePath()
         ctx.stroke()
+        ctx.fill();
       }
-      //       this.lineInterest(this.containerItems[index].lt, this.containerItems[index].rt, this.containerItems[index].lb, this.containerItems[index].rb)
-      // if (this.interest) {
-      //   ctx.strokeStyle = 'red'
-      //   ctx.fillStyle = 'red';
-      // } else {
-      //   ctx.strokeStyle = this.color
-      //   ctx.fillStyle = this.color;
-      // }
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = this.color;
-      ctx.fillStyle = this.color;
-      ctx.fill();
     },
     checkPoint(index, x, y) {
-      const canvas = document.getElementById("canvass");
+      const canvas = this.$refs.canvas
       let ctx = canvas.getContext("2d");
 
       ctx.beginPath()
@@ -465,6 +335,9 @@ export default {
         element >= 1;
         element--) {
         // lt rt пересекается с lt rt
+        if (this.interest) {
+          return
+        }
         det = (rt[0] - lt[0]) * (this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) - (this.containerItems[element].rt[0] - this.containerItems[element].lt[0]) * (rt[1] - lt[1])
         if (det === 0) {
           this.interest = false;
@@ -472,6 +345,11 @@ export default {
           lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
           gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
           this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+          if (this.interest) {
+            det = 0;
+            lambda = 0;
+            gamma = 0;
+          }
         }
         // from (a,b)->(c,d) intersects with (p,q)->(r,s)
         // var det, gamma, lambda;
@@ -492,6 +370,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -503,6 +386,11 @@ export default {
             lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
             gamma = ((lt[1] - rt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -514,6 +402,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             gamma = ((lt[1] - rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (rt[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -525,6 +418,11 @@ export default {
             lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
             gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rt[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rt[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -536,6 +434,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -548,6 +451,11 @@ export default {
             lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
             gamma = ((lt[1] - lb[1]) * (this.containerItems[element].lb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].lb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -559,6 +467,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             gamma = ((lt[1] - lb[1]) * (this.containerItems[element].rb[0] - lt[0]) + (lb[0] - lt[0]) * (this.containerItems[element].rb[1] - lt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -570,6 +483,11 @@ export default {
             lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - rt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - rt[1])) / det;
             gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rt[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rt[1] - rt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -582,6 +500,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - rt[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
             gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -594,6 +517,11 @@ export default {
             lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - rt[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - rt[1])) / det;
             gamma = ((rt[1] - rb[1]) * (this.containerItems[element].lb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].lb[1] - rt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -606,6 +534,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
             gamma = ((rt[1] - rb[1]) * (this.containerItems[element].rb[0] - rt[0]) + (rb[0] - rt[0]) * (this.containerItems[element].rb[1] - rt[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -617,6 +550,11 @@ export default {
             lambda = ((this.containerItems[element].rt[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].rt[0] - lb[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].rt[0]) * (this.containerItems[element].rt[1] - lb[1])) / det;
             gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rt[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rt[1] - lb[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -629,6 +567,11 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].rt[1]) * (this.containerItems[element].rb[0] - lb[0]) + (this.containerItems[element].rt[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
             gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -640,6 +583,11 @@ export default {
             lambda = ((this.containerItems[element].lb[1] - this.containerItems[element].lt[1]) * (this.containerItems[element].lb[0] - lb[0]) + (this.containerItems[element].lt[0] - this.containerItems[element].lb[0]) * (this.containerItems[element].lb[1] - lb[1])) / det;
             gamma = ((lb[1] - rb[1]) * (this.containerItems[element].lb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].lb[1] - lb[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
         if (this.interest === false) {
@@ -651,36 +599,20 @@ export default {
             lambda = ((this.containerItems[element].rb[1] - this.containerItems[element].lb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (this.containerItems[element].lb[0] - this.containerItems[element].rb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
             gamma = ((lb[1] - rb[1]) * (this.containerItems[element].rb[0] - lb[0]) + (rb[0] - lb[0]) * (this.containerItems[element].rb[1] - lb[1])) / det;
             this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            if (this.interest) {
+              det = 0;
+              lambda = 0;
+              gamma = 0;
+            }
           }
         }
       }
-      // }
-      // if (this.containerItems.length > 1) {
-      //   this.containerItems.forEach(element => {
-      //     // срвавниваем новый лт и рт со всеми линиями предыдущих областей
-      //     det = (rt[0] - lt[0]) * (element.rt[1] - element.lt[1]) - (element.rt[0] - element.lt[0]) * (rt[1] - lt[1])
-      //     if (det === 0) {
-      //       this.interest = false;
-      //     } else {
-      //       lambda = ((element.rt[1] - element.lt[1]) * (element.rt[0] - lt[0]) + (element.lt[0] - element.rt[0]) * (element.rt[1] - lt[1])) / det;
-      //       gamma = ((lt[1] - rt[1]) * (element.rt[0] - lt[0]) + (rt[0] - lt[0]) * (element.rt[1] - lt[1])) / det;
-      //       this.interest = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
-      //     }
-      //   })
-      // }
 
     },
   },
 };
 </script>
 
-<template>
-  <div class="">
-    <canvas id="canvass" width="1000" height="600" class="bg-slate-800 bg-[url('../public/bg-canvas.jpg')] mx-auto my-4"
-      @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup">
-    </canvas>
-  </div>
-</template>
 <!-- https://stackovergo.com/ru/q/2326403/test-if-two-lines-intersect---javascript-function
     сделать проверку на пересечение каждого отрезка
  -->
